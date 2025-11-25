@@ -1,0 +1,62 @@
+plugins {
+    id 'application'
+}
+
+ext {
+	bootstrapOutput = file("$buildDir/generated-resources")
+	generateOutput = file(project(':evaluator').projectDir.path + "/src/main/generated-resources")
+}
+
+application {
+    mainClass = 'io.github.kennethshackleton.skpokereval.generator.FindPrime'
+}
+
+sourceSets {
+	bootstrap {
+	}
+	
+	main {
+		resources.srcDirs += bootstrapOutput
+		java {
+			compileClasspath += sourceSets.bootstrap.output
+			runtimeClasspath += sourceSets.bootstrap.output
+		}
+	}
+}
+
+configurations {
+	bootstrapImplementation.extendsFrom implementation
+}
+
+dependencies {
+	implementation 'org.agrona:agrona:1.21.1'
+	implementation 'info.picocli:picocli:4.7.6'
+	
+}
+
+task bootstrap(type: JavaExec){
+	outputs.dir bootstrapOutput
+	classpath = sourceSets.bootstrap.runtimeClasspath 
+	mainClass = "io.github.kennethshackleton.skpokereval.generator.Bootstrap"
+	args bootstrapOutput
+}
+processResources.dependsOn bootstrap
+
+
+task generate(type: JavaExec){
+	outputs.dir generateOutput
+	classpath = sourceSets.main.runtimeClasspath 
+	mainClass = "io.github.kennethshackleton.skpokereval.generator.TablesGenerator"
+	args generateOutput
+}
+
+tasks.register('uberJar', Jar) {
+    archiveClassifier = 'all'
+	manifest.attributes["Main-Class"] = "io.github.kennethshackleton.skpokereval.generator.FindPrime"
+    from sourceSets.main.output, sourceSets.bootstrap.output
+    dependsOn configurations.runtimeClasspath
+    from {
+        configurations.runtimeClasspath.findAll { it.name.endsWith('jar') }.collect { zipTree(it) }
+    }
+}
+jar.dependsOn('uberJar')

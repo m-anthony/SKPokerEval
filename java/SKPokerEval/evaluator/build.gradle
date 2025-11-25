@@ -1,0 +1,29 @@
+plugins {
+	id 'me.champeau.jmh' version '0.7.2'
+}
+
+processResources.dependsOn(':generator:generate')
+processTestResources.dependsOn(':generator:generate')
+clean.dependsOn(':generator:cleanGenerate')
+
+sourceSets {
+	main {
+		resources.srcDirs += 'src/main/generated-resources'
+	}
+}
+
+
+testing {
+	suites {
+		test {
+			useJUnitJupiter()
+		}
+	}
+}
+
+jmh {
+	includes = ['Evaluator']
+	fork = 2
+	iterations = 5
+	jmhVersion = '1.37'
+}
