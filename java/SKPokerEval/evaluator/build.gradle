@@ -2,9 +2,19 @@ plugins {
 	id 'me.champeau.jmh' version '0.7.2'
 }
 
-processResources.dependsOn(':generator:generate')
-processTestResources.dependsOn(':generator:generate')
-clean.dependsOn(':generator:cleanGenerate')
+def findProjectUtility = project.parent.ext.findProjectByName
+def generatorProjectRef = findProjectUtility.call('generator')
+tasks.named('processResources') {
+    // La tâche 'classes' dépend maintenant de la préparation des ressources générées
+    dependsOn(generatorProjectRef.tasks.named('generate'))
+}
+tasks.named('processTestResources') {
+    // La tâche 'classes' dépend maintenant de la préparation des ressources générées
+    dependsOn(generatorProjectRef.tasks.named('generate'))
+}
+tasks.named('clean') {
+    dependsOn(generatorProjectRef.tasks.named('cleanGenerate'))
+}
 
 sourceSets {
 	main {

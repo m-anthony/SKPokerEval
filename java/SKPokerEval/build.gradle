@@ -3,12 +3,23 @@ plugins {
 }
 
 allprojects {
-	group 'io.github.kennethshackleton.skpokereval'
-	version '1.10.0-SNAPSHOT'
+	group = 'io.github.kennethshackleton.skpokereval'
+	version = '1.10.0-SNAPSHOT'
 	
 	repositories {
 		mavenCentral()
 	}
+}
+
+ext.findProjectByName = { String projectName ->
+    // Parcourir TOUS les projets de la hiérarchie du build (même les projets inclus)
+    // et trouver celui dont le nom simple correspond.
+    def foundProject = rootProject.allprojects.find { p ->
+        p.name == projectName
+    }
+
+    // Retourner la référence du projet ou null
+    return foundProject
 }
 
 subprojects {

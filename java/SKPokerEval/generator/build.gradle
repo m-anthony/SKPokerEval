@@ -2,9 +2,11 @@ plugins {
     id 'application'
 }
 
+
 ext {
-	bootstrapOutput = file("$buildDir/generated-resources")
-	generateOutput = file(project(':evaluator').projectDir.path + "/src/main/generated-resources")
+    def evaluatorProjectRef = findProjectByName('evaluator')
+	bootstrapOutput = layout.buildDirectory.dir("/generated-resources").get().asFile
+	generateOutput = file(evaluatorProjectRef.projectDir.path + "/src/main/generated-resources")
 }
 
 application {
@@ -29,12 +31,11 @@ configurations {
 }
 
 dependencies {
-	implementation 'org.agrona:agrona:1.21.1'
-	implementation 'info.picocli:picocli:4.7.6'
-	
+	implementation 'org.agrona:agrona:2.3.2'
+	implementation 'info.picocli:picocli:4.7.7'
 }
 
-task bootstrap(type: JavaExec){
+tasks.register("bootstrap", JavaExec){
 	outputs.dir bootstrapOutput
 	classpath = sourceSets.bootstrap.runtimeClasspath 
 	mainClass = "io.github.kennethshackleton.skpokereval.generator.Bootstrap"
@@ -43,7 +44,7 @@ task bootstrap(type: JavaExec){
 processResources.dependsOn bootstrap
 
 
-task generate(type: JavaExec){
+tasks.register("generate", JavaExec){
 	outputs.dir generateOutput
 	classpath = sourceSets.main.runtimeClasspath 
 	mainClass = "io.github.kennethshackleton.skpokereval.generator.TablesGenerator"
