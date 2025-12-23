@@ -1,10 +1,5 @@
 package io.github.kennethshackleton.skpokereval.generator;
 
-import picocli.CommandLine;
-import picocli.CommandLine.ArgGroup;
-import picocli.CommandLine.Command;
-import picocli.CommandLine.Option;
-
 import java.util.Date;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -13,8 +8,11 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.LockSupport;
-
 import org.agrona.collections.IntArrayList;
+import picocli.CommandLine;
+import picocli.CommandLine.ArgGroup;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
 
 @Command(name = "findprime")
 public class FindPrime implements Callable<Integer> {
