@@ -4,9 +4,9 @@ plugins {
 
 
 ext {
-    def evaluatorProjectRef = findProjectByName('evaluator')
-	bootstrapOutput = layout.buildDirectory.dir("/generated-resources").get().asFile
-	generateOutput = file(evaluatorProjectRef.projectDir.path + "/src/main/generated-resources")
+    def evaluatorProject = project(':SKPokerEval:evaluator')
+    bootstrapOutput = layout.buildDirectory.dir("generated-resources").get().asFile
+    generateOutput = new File(evaluatorProject.projectDir, "src/main/generated-resources")
 }
 
 application {
